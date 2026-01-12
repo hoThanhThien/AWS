@@ -1,20 +1,19 @@
 import os
-import pymysql
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
-from sqlalchemy.orm import Session
 
 # Get DATABASE_URL from environment
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "postgresql://postgres:postgres123@db:5432/nhom09_db"
+    "mysql+pymysql://tour_user:tour_pass123@db:3306/tourbookingdb"
 )
 
 engine = create_engine(
     DATABASE_URL,
     echo=False,
     pool_pre_ping=True,
-    pool_recycle=3600
+    pool_recycle=3600,
+    connect_args={"charset": "utf8mb4"}
 )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -28,5 +27,5 @@ def get_db():
         db.close()
 
 def get_db_connection():
-    """Dummy function for compatibility - returns SQLAlchemy connection"""
+    """Return SQLAlchemy connection"""
     return engine.connect()

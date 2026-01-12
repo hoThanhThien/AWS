@@ -1,6 +1,24 @@
 version: '3.8'
 
 services:
+  db:
+    image: mysql:8.0
+    container_name: nhom09_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: tourbookingdb
+      MYSQL_USER: tour_user
+      MYSQL_PASSWORD: tour_pass123
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    restart: unless-stopped
+
   backend:
     build:
       context: ./backend
@@ -12,7 +30,7 @@ services:
       - PAYPAL_MODE=${PAYPAL_MODE:-sandbox}
       - PAYPAL_CLIENT_ID=${PAYPAL_CLIENT_ID}
       - PAYPAL_CLIENT_SECRET=${PAYPAL_CLIENT_SECRET}
-      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-nhom09_db}
+      - DATABASE_URL=mysql+pymysql://tour_user:tour_pass123@db:3306/tourbookingdb
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
       - CORS_ORIGINS=${CORS_ORIGINS}
       - DEBUG=${DEBUG:-False}
@@ -25,12 +43,6 @@ services:
     env_file:
       - .env
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
 
   frontend:
     build:
@@ -40,35 +52,10 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - VITE_API_URL=http://localhost:8000/api
-    depends_on:
-      - backend
-    restart: unless-stopped
-
-  db:
-    image: postgres:15-alpine
-    container_name: nhom09_postgres
-    environment:
-      - POSTGRES_DB=${POSTGRES_DB:-nhom09_db}
-      - POSTGRES_USER=${POSTGRES_USER:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - VITE_API_BASE_URL=${VITE_API_BASE_URL:-http://localhost:8000}
     env_file:
-      - .env.db
+      - .env
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
 volumes:
-  postgres_data:
-    driver: local
-
-networks:
-  default:
-    name: nhom09_network
+  mysql_data:
