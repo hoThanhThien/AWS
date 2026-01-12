@@ -40,3 +40,7 @@ typing_extensions==4.15.0
 urllib3==2.5.0
 uvicorn==0.37.0
 wsproto==1.2.0
+SQLAlchemy==2.0.44
+alembic==1.13.1
+alembic==1.13.1
+psycopg2-binary==2.9.9

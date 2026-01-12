@@ -1,32 +1,24 @@
+import os
+import pymysql
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
-import pymysql
 from sqlalchemy.orm import Session
 
-# Thay đổi các thông tin này cho phù hợp với database của bạn
-DB_USER = 'root'
-DB_PASSWORD = ''
-DB_HOST = 'localhost'
-DB_PORT = 3306
-DB_NAME = 'tourbookingdb'
+# Get DATABASE_URL from environment
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "postgresql://postgres:postgres123@db:5432/nhom09_db"
+)
 
-SQLALCHEMY_DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+engine = create_engine(
+    DATABASE_URL,
+    echo=False,
+    pool_pre_ping=True,
+    pool_recycle=3600
+)
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL, echo=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
-
-def get_db_connection():
-    """Tạo kết nối MySQL trực tiếp (không qua SQLAlchemy)"""
-    return pymysql.connect(
-        host=DB_HOST,
-        port=DB_PORT,
-        user=DB_USER,
-        password=DB_PASSWORD,
-        database=DB_NAME,
-        charset='utf8mb4',
-        cursorclass=pymysql.cursors.DictCursor
-    )
 
 def get_db():
     db = SessionLocal()
@@ -35,3 +27,6 @@ def get_db():
     finally:
         db.close()
 
+def get_db_connection():
+    """Dummy function for compatibility - returns SQLAlchemy connection"""
+    return engine.connect()
