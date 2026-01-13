@@ -1,7 +1,5 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime, Text, Date
-from sqlalchemy.sql import func
+from sqlalchemy import Column, Integer, String, Float, Text, Date
 from app.database import Base
-from datetime import datetime
 
 class Tour(Base):
     __tablename__ = "tour"
@@ -18,4 +16,4 @@ class Tour(Base):
     category_id = Column("CategoryID", Integer)
     
     def __repr__(self):
-        return f"<Tour(id={self.id}, title={self.title}, price={self.price})>"
+        return f"<Tour(id={self.id}, title={self.title})>"

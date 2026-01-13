@@ -15,4 +15,4 @@ class Booking(Base):
     order_code = Column("OrderCode", String(50))
     
     def __repr__(self):
-        return f"<Booking(id={self.id}, user_id={self.user_id})>"
+        return f"<Booking(id={self.id})>"
