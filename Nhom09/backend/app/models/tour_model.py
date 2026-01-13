@@ -1,12 +1,21 @@
-class Tour:
-    def __init__(self, tour_id: int, title: str, location: str, description: str, capacity: int, price: float, start_date: str, end_date: str, status: str, category_id: int):
-        self.tour_id = tour_id
-        self.title = title
-        self.location = location
-        self.description = description
-        self.capacity = capacity
-        self.price = price
-        self.start_date = start_date
-        self.end_date = end_date
-        self.status = status
-        self.category_id = category_id
+from sqlalchemy import Column, Integer, String, Float, DateTime, Text, Date
+from sqlalchemy.sql import func
+from app.database import Base
+from datetime import datetime
+
+class Tour(Base):
+    __tablename__ = "tour"
+    
+    id = Column("TourID", Integer, primary_key=True, index=True)
+    title = Column("Title", String(100), nullable=False)
+    location = Column("Location", String(100))
+    description = Column("Description", Text)
+    capacity = Column("Capacity", Integer)
+    price = Column("Price", Float)
+    start_date = Column("StartDate", Date)
+    end_date = Column("EndDate", Date)
+    status = Column("Status", String(50), default="Available")
+    category_id = Column("CategoryID", Integer)
+    
+    def __repr__(self):
+        return f"<Tour(id={self.id}, title={self.title}, price={self.price})>"

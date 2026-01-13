@@ -1,5 +1,12 @@
-class Category:
-    def __init__(self, category_id: int, category_name: str, description: str):
-        self.category_id = category_id
-        self.category_name = category_name
-        self.description = description
+from sqlalchemy import Column, Integer, String
+from app.database import Base
+
+class Category(Base):
+    __tablename__ = "category"
+    
+    id = Column("CategoryID", Integer, primary_key=True, index=True)
+    name = Column("CategoryName", String(100), nullable=False)
+    description = Column("Description", Text)
+    
+    def __repr__(self):
+        return f"<Category(id={self.id}, name={self.name})>"

@@ -1,20 +1,18 @@
-from sqlalchemy import Column, Integer, Date, Numeric, Enum, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, String, Float, Date
 from app.database import Base
-import enum
-
-class BookingStatus(enum.Enum):
-    Pending = 'Pending'
-    Confirmed = 'Confirmed'
-    Cancelled = 'Cancelled'
 
 class Booking(Base):
-    __tablename__ = 'booking'
-    BookingID = Column(Integer, primary_key=True, index=True)
-    UserID = Column(Integer, ForeignKey('user.UserID'))
-    TourID = Column(Integer, ForeignKey('tour.TourID'))
-    BookingDate = Column(Date)
-    NumberOfPeople = Column(Integer)
-    TotalAmount = Column(Numeric(10,2))
-    Status = Column(Enum(BookingStatus), default=BookingStatus.Pending)
-    DiscountID = Column(Integer, ForeignKey('discount.DiscountID'))
+    __tablename__ = "booking"
+    
+    id = Column("BookingID", Integer, primary_key=True, index=True)
+    user_id = Column("UserID", Integer)
+    tour_id = Column("TourID", Integer)
+    booking_date = Column("BookingDate", Date)
+    number_of_people = Column("NumberOfPeople", Integer)
+    total_amount = Column("TotalAmount", Float)
+    status = Column("Status", String(50))
+    discount_id = Column("DiscountID", Integer)
+    order_code = Column("OrderCode", String(50))
+    
+    def __repr__(self):
+        return f"<Booking(id={self.id}, user_id={self.user_id})>"
