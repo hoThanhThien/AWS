@@ -1,61 +1,58 @@
-version: '3.8'
-
 services:
-  db:
+  phpmyadmin:
+    image: phpmyadmin:latest
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: nhom09_mysql
+      PMA_USER: root
+      PMA_PASSWORD: root123
+    networks:
+      - nhom09_network
+    depends_on:
+      - nhom09_mysql
+
+  nhom09_mysql:
     image: mysql:8.0
     container_name: nhom09_mysql
     environment:
       MYSQL_ROOT_PASSWORD: root123
       MYSQL_DATABASE: tourbookingdb
-      MYSQL_USER: tour_user
-      MYSQL_PASSWORD: tour_pass123
     ports:
       - "3306:3306"
+    networks:
+      - nhom09_network
     volumes:
       - mysql_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      timeout: 20s
-      retries: 10
-    restart: unless-stopped
 
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+  nhom09_backend:
+    image: nhom09-backend
     container_name: nhom09_backend
     ports:
       - "8000:8000"
     environment:
-      - PAYPAL_MODE=${PAYPAL_MODE:-sandbox}
-      - PAYPAL_CLIENT_ID=${PAYPAL_CLIENT_ID}
-      - PAYPAL_CLIENT_SECRET=${PAYPAL_CLIENT_SECRET}
-      - DATABASE_URL=mysql+pymysql://tour_user:tour_pass123@db:3306/tourbookingdb
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
-      - CORS_ORIGINS=${CORS_ORIGINS}
-      - DEBUG=${DEBUG:-False}
-      - ENVIRONMENT=${ENVIRONMENT:-production}
+      DATABASE_URL: mysql+pymysql://root:root123@nhom09_mysql:3306/tourbookingdb
+      DB_HOST: nhom09_mysql
+      DB_USER: root
+      DB_PASSWORD: root123
+      DB_NAME: tourbookingdb
+      DB_PORT: 3306
+    networks:
+      - nhom09_network
     depends_on:
-      db:
-        condition: service_healthy
-    volumes:
-      - ./backend/uploads:/app/uploads
-    env_file:
-      - .env
-    restart: unless-stopped
+      - nhom09_mysql
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+  nhom09_frontend:
+    image: nhom09-frontend
     container_name: nhom09_frontend
     ports:
       - "3000:3000"
-    environment:
-      - VITE_API_BASE_URL=${VITE_API_BASE_URL:-http://localhost:8000}
-    env_file:
-      - .env
-    restart: unless-stopped
+    networks:
+      - nhom09_network
+
+networks:
+  nhom09_network:
+    driver: bridge
 
 volumes:
   mysql_data:
