@@ -3,7 +3,8 @@
 // Thay thế dòng code cũ của bạn bằng logic if/else
 const API_BASE_URL = import.meta.env.PROD
   ? 'https://api.hothanhthien.io.vn'
-  : 'http://localhost:8000';
+  : 'http://nhom09_backend:8000';
+
 
 export class PayPalService {
   /**

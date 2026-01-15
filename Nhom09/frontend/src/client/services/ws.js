@@ -4,7 +4,7 @@ export function connectSupportWS(token) {
 
   // Quyết định URL máy chủ WebSocket
   const wsHost = isProd
-    ? 'wss://hothanhthien.io.vn' // 👈 URL khi chạy trên HOSTING
+    ? 'wss://nhom09_backend:8000' // 👈 URL khi chạy trên HOSTING
     : 'ws://127.0.0.1:8000';   // 👈 URL khi chạy ở LOCAL
 
   const url = `${wsHost}/ws/support?token=${token}`;

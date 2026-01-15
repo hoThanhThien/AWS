@@ -3,7 +3,7 @@ import axios from 'axios';
 // Thay thế dòng code cũ của bạn bằng dòng này
 const API_URL = import.meta.env.PROD
   ? 'https://api.hothanhthien.io.vn/payments' // 👈 Giá trị khi chạy trên HOSTING
-  : 'http://localhost:8000/payments';        // 👈 Giá trị khi chạy ở LOCAL
+  : 'http://nhom09_backend:8000/payments';        // 👈 Giá trị khi chạy ở LOCAL
 
 /**
  * Tạo payment request với MoMo
